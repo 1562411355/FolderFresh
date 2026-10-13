@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FolderFresh.Models;
+using FolderFresh.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -34,6 +35,22 @@ public sealed partial class CategoryCard : UserControl
     public CategoryCard()
     {
         this.InitializeComponent();
+        ApplyLocalization();
+        LocalizationService.Instance.LanguageChanged += (s, e) =>
+        {
+            ApplyLocalization();
+            if (Category != null)
+            {
+                UpdateDisplay(Category);
+            }
+        };
+    }
+
+    private void ApplyLocalization()
+    {
+        ToolTipService.SetToolTip(LockIcon, Loc.Get("CategoryCard_DefaultTooltip"));
+        ToolTipService.SetToolTip(EditButton, Loc.Get("CategoryCard_EditTooltip"));
+        ToolTipService.SetToolTip(DeleteButton, Loc.Get("CategoryCard_DeleteTooltip"));
     }
 
     private static void OnCategoryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -120,7 +137,7 @@ public sealed partial class CategoryCard : UserControl
         {
             displayItems.AddRange(extensions.Take(MaxVisibleExtensions));
             var remaining = extensions.Count - MaxVisibleExtensions;
-            displayItems.Add($"+{remaining} more");
+            displayItems.Add(Loc.Get("CategoryCard_MoreExtensions", remaining));
         }
 
         ExtensionsList.ItemsSource = displayItems;

@@ -96,7 +96,11 @@ public sealed partial class CategoryFormPanel : UserControl
         FolderNameLabel.Text = Loc.Get("CategoryForm_FolderName");
         DestinationTextBox.PlaceholderText = Loc.Get("CategoryForm_FolderNamePlaceholder");
         ExtensionsLabel.Text = Loc.Get("CategoryForm_FileExtensions");
-        ExtensionsDesc.Text = Loc.Get("CategoryForm_FileExtensionsPlaceholder");
+        ExtensionsDesc.Text = Loc.Get("CategoryForm_ExtensionsDesc");
+        IconLabel.Text = Loc.Get("CategoryForm_Icon");
+        ColorLabel.Text = Loc.Get("CategoryForm_Color");
+        CommonExtensionsLabel.Text = Loc.Get("CategoryForm_CommonExtensions");
+        AddExtensionButton.Content = Loc.Get("Add");
         CancelButton.Content = Loc.Get("Cancel");
         SaveButton.Content = Loc.Get("CategoryForm_SaveCategory");
 

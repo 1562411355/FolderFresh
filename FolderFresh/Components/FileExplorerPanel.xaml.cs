@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using FolderFresh.Helpers;
 using FolderFresh.Models;
+using FolderFresh.Services;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -37,6 +38,16 @@ public sealed partial class FileExplorerPanel : UserControl
         this.InitializeComponent();
         this.Loaded += FileExplorerPanel_Loaded;
         FileListView.ItemsSource = _sortedItems;
+        ApplyLocalization();
+        LocalizationService.Instance.LanguageChanged += (s, e) => ApplyLocalization();
+    }
+
+    private void ApplyLocalization()
+    {
+        NameHeaderText.Text = Loc.Get("FileExplorer_HeaderName");
+        DateHeaderText.Text = Loc.Get("FileExplorer_HeaderDateModified");
+        TypeHeaderText.Text = Loc.Get("FileExplorer_HeaderType");
+        SizeHeaderText.Text = Loc.Get("FileExplorer_HeaderSize");
     }
 
     private void FileExplorerPanel_Loaded(object sender, RoutedEventArgs e)

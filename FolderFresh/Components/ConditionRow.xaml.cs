@@ -147,6 +147,7 @@ public sealed partial class ConditionRow : UserControl
             PopulateAttributeDropdown();
             PopulateKindDropdown();
             PopulateDateUnitDropdown();
+            DateValuePicker.PlaceholderText = Loc.Get("Condition_SelectDate");
 
             if (selectedAttrIndex >= 0)
                 AttributeComboBox.SelectedIndex = selectedAttrIndex;
@@ -469,9 +470,9 @@ public sealed partial class ConditionRow : UserControl
                 TextValueInput.PlaceholderText = attribute switch
                 {
                     ConditionAttribute.Extension => ".pdf, .docx",
-                    ConditionAttribute.Folder => "Folder name...",
-                    ConditionAttribute.FolderPath => "Path to folder...",
-                    _ => "Enter value..."
+                    ConditionAttribute.Folder => Loc.Get("Condition_FolderPlaceholder"),
+                    ConditionAttribute.FolderPath => Loc.Get("Condition_PathPlaceholder"),
+                    _ => Loc.Get("Condition_EnterValue")
                 };
                 break;
 

@@ -134,7 +134,7 @@
                 Margin="24,16"
                 HorizontalAlignment="Center"
                 Visibility="Collapsed">
-            <TextBlock Text="Loading..."
+            <TextBlock x:Name="LoadingText" Text="Loading..."
                        FontSize="13"
                        Foreground="#999999"/>
         </Border>

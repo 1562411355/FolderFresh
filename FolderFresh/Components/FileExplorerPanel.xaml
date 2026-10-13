@@ -130,7 +130,7 @@
                             Click="ColumnHeader_Click"
                             Tag="Name">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock Text="Name"
+                            <TextBlock x:Name="NameHeaderText" Text="Name"
                                        FontSize="12"
                                        FontWeight="SemiBold"
                                        Foreground="#B0B0B0"/>
@@ -154,7 +154,7 @@
                             Click="ColumnHeader_Click"
                             Tag="DateModified">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock Text="Date Modified"
+                            <TextBlock x:Name="DateHeaderText" Text="Date Modified"
                                        FontSize="12"
                                        FontWeight="SemiBold"
                                        Foreground="#B0B0B0"/>
@@ -178,7 +178,7 @@
                             Click="ColumnHeader_Click"
                             Tag="Type">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock Text="Type"
+                            <TextBlock x:Name="TypeHeaderText" Text="Type"
                                        FontSize="12"
                                        FontWeight="SemiBold"
                                        Foreground="#B0B0B0"/>
@@ -202,7 +202,7 @@
                             Click="ColumnHeader_Click"
                             Tag="Size">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock Text="Size"
+                            <TextBlock x:Name="SizeHeaderText" Text="Size"
                                        FontSize="12"
                                        FontWeight="SemiBold"
                                        Foreground="#B0B0B0"/>

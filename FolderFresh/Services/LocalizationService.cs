@@ -26,6 +26,7 @@ public class LocalizationService
     public static readonly Dictionary<string, string> AvailableLanguages = new()
     {
         { "en-US", "English" },
+        { "zh-CN", "中文(简体)" },
         { "de-DE", "Deutsch" },
         { "uk-UA", "Українська" },
         { "fr-FR", "Français" },

@@ -46,6 +46,9 @@ public sealed partial class ProfilesContent : UserControl
         ImportButtonText.Text = Loc.Get("Profiles_Import");
         NewProfileButtonText.Text = Loc.Get("Profiles_NewProfile");
         InfoBannerText.Text = Loc.Get("Profiles_InfoBanner");
+        StarterPacksButtonText.Text = Loc.Get("StarterPacks_Title");
+        ToolTipService.SetToolTip(ImportButton, Loc.Get("Profiles_ImportTooltip"));
+        ToolTipService.SetToolTip(StarterPacksButton, Loc.Get("Profiles_StarterPacksTooltip"));
 
         // Refresh profile cards to update localized text
         LoadProfiles();
@@ -134,7 +137,7 @@ public sealed partial class ProfilesContent : UserControl
         // Date info
         var dateText = new TextBlock
         {
-            Text = Loc.Get("Profiles_Created", profile.CreatedAt.ToString("MMM d, yyyy")),
+            Text = Loc.Get("Profiles_Created", profile.CreatedAt.ToString(Loc.Get("DateFormat_Short"))),
             FontSize = 12,
             Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 102, 102, 102))
         };
@@ -403,7 +406,7 @@ public sealed partial class ProfilesContent : UserControl
         {
             flyout.Items.Add(new MenuFlyoutItem
             {
-                Text = "No starter packs found",
+                Text = Loc.Get("StarterPacks_NotFound"),
                 IsEnabled = false
             });
             flyout.ShowAt(StarterPacksButton);
@@ -418,7 +421,7 @@ public sealed partial class ProfilesContent : UserControl
         {
             flyout.Items.Add(new MenuFlyoutItem
             {
-                Text = "No starter packs found",
+                Text = Loc.Get("StarterPacks_NotFound"),
                 IsEnabled = false
             });
         }
@@ -457,8 +460,8 @@ public sealed partial class ProfilesContent : UserControl
 
             var dialog = new ContentDialog
             {
-                Title = "Starter Pack Imported",
-                Content = $"Imported \"{importName}\". Preview a temporary folder before running it on real files.",
+                Title = Loc.Get("StarterPacks_Imported"),
+                Content = Loc.Get("StarterPacks_ImportedMsg", importName),
                 CloseButtonText = Loc.Get("OK"),
                 XamlRoot = this.XamlRoot
             };
@@ -468,7 +471,7 @@ public sealed partial class ProfilesContent : UserControl
         {
             var dialog = new ContentDialog
             {
-                Title = "Starter Pack Import Failed",
+                Title = Loc.Get("StarterPacks_ImportFailed"),
                 Content = ex.Message,
                 CloseButtonText = Loc.Get("OK"),
                 XamlRoot = this.XamlRoot

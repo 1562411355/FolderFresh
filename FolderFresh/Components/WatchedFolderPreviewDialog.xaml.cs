@@ -92,7 +92,7 @@ public sealed partial class WatchedFolderPreviewDialog : ContentDialog
             WarningsText.Text = string.Join("; ", _previewResult.Errors.Take(3));
             if (_previewResult.Errors.Count > 3)
             {
-                WarningsText.Text += $" (+{_previewResult.Errors.Count - 3} more)";
+                WarningsText.Text += Loc.Get("Preview_MoreErrors", _previewResult.Errors.Count - 3);
             }
         }
 

@@ -235,7 +235,7 @@
 
                             <!-- Common Suggestions -->
                             <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                                <TextBlock Text="Common:"
+                                <TextBlock x:Name="CommonExtensionsLabel" Text="Common:"
                                            FontSize="11"
                                            Foreground="#666666"
                                            VerticalAlignment="Center"/>

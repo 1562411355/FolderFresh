@@ -278,7 +278,7 @@ public sealed partial class SnapshotsContent : UserControl
         {
             Header = Loc.Get("Snapshots_SnapshotName"),
             PlaceholderText = Loc.Get("Snapshots_SnapshotNamePlaceholder"),
-            Text = $"{folder.Name} - {DateTime.Now:MMM d, yyyy}"
+            Text = $"{folder.Name} - {DateTime.Now.ToString(Loc.Get("DateFormat_Short"))}"
         };
         dialogContent.Children.Add(nameBox);
 

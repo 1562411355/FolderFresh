@@ -59,6 +59,9 @@ public sealed partial class WatchedFoldersContent : UserControl
         EmptyTitleText.Text = Loc.Get("Folders_EmptyTitle");
         EmptyDescText.Text = Loc.Get("Folders_EmptyDesc");
         EmptyAddButtonText.Text = Loc.Get("Folders_AddFolder");
+        LoadingText.Text = Loc.Get("Folders_Loading");
+        ToolTipService.SetToolTip(StopAllButton, Loc.Get("Folders_StopAllTooltip"));
+        ToolTipService.SetToolTip(StartAllButton, Loc.Get("Folders_StartAllTooltip"));
     }
 
     /// <summary>
@@ -283,7 +286,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         });
         profilePanel.Children.Add(new TextBlock
         {
-            Text = $"Using: {folder.ProfileName ?? "Unknown"}",
+            Text = Loc.Get("Folders_UsingProfile", folder.ProfileName ?? Loc.Get("Status_Unknown")),
             FontSize = 12,
             Foreground = new SolidColorBrush(Color.FromArgb(255, 136, 136, 136))
         });
@@ -292,7 +295,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         // Last organized
         var lastOrganizedText = folder.LastOrganizedAt.HasValue
             ? FormatTimeAgo(folder.LastOrganizedAt.Value)
-            : "Never organized";
+            : Loc.Get("Folders_NeverOrganized");
 
         var lastOrganizedPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
         lastOrganizedPanel.Children.Add(new FontIcon
@@ -318,7 +321,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         };
         fileCountBadge.Child = new TextBlock
         {
-            Text = $"{folder.FileCount} files",
+            Text = Loc.Get("Preview_Files", folder.FileCount),
             FontSize = 11,
             Foreground = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153))
         };
@@ -371,7 +374,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         {
             var retryButton = new Button
             {
-                Content = "Retry",
+                Content = Loc.Get("Folders_Retry"),
                 Background = new SolidColorBrush(Color.FromArgb(255, 239, 68, 68)),
                 Foreground = new SolidColorBrush(Colors.White),
                 Padding = new Thickness(12, 6, 12, 6),
@@ -410,7 +413,7 @@ public sealed partial class WatchedFoldersContent : UserControl
             IsEnabled = folder.Status != WatchStatus.Error
         };
         previewButton.Content = new TextBlock { Text = Loc.Get("Folders_Preview"), FontSize = 12 };
-        ToolTipService.SetToolTip(previewButton, "Preview what files will be organized");
+        ToolTipService.SetToolTip(previewButton, Loc.Get("Folders_PreviewTooltip"));
         previewButton.Click += PreviewButton_Click;
         actionPanel.Children.Add(previewButton);
 
@@ -487,29 +490,29 @@ public sealed partial class WatchedFoldersContent : UserControl
             case WatchStatus.Watching:
                 bgColor = Color.FromArgb(255, 16, 185, 129);
                 fgColor = Colors.White;
-                text = "Watching";
+                text = Loc.Get("Status_Watching");
                 glyph = "\uEA3A"; // Dot
-                tooltip = "Actively monitoring for file changes";
+                tooltip = Loc.Get("Status_WatchingTooltip");
                 break;
             case WatchStatus.Organizing:
                 bgColor = Color.FromArgb(255, 59, 130, 246);
                 fgColor = Colors.White;
-                text = "Organizing...";
-                tooltip = "Currently organizing files";
+                text = Loc.Get("Status_Organizing");
+                tooltip = Loc.Get("Status_OrganizingTooltip");
                 break;
             case WatchStatus.Error:
                 bgColor = Color.FromArgb(255, 239, 68, 68);
                 fgColor = Colors.White;
-                text = "Error";
+                text = Loc.Get("Status_Error");
                 glyph = "\uE7BA"; // Warning
-                tooltip = folder.LastError ?? "An error occurred";
+                tooltip = folder.LastError ?? Loc.Get("Status_ErrorFallback");
                 break;
             case WatchStatus.Idle:
             default:
                 bgColor = Color.FromArgb(255, 107, 114, 128);
                 fgColor = Colors.White;
-                text = "Idle";
-                tooltip = "Not currently watching for changes";
+                text = Loc.Get("Status_Idle");
+                tooltip = Loc.Get("Status_IdleTooltip");
                 break;
         }
 
@@ -562,15 +565,15 @@ public sealed partial class WatchedFoldersContent : UserControl
         var span = DateTime.Now - dateTime;
 
         if (span.TotalMinutes < 1)
-            return "Just now";
+            return Loc.Get("Time_JustNow");
         if (span.TotalMinutes < 60)
-            return $"{(int)span.TotalMinutes} min ago";
+            return Loc.Get("Time_MinAgo", (int)span.TotalMinutes);
         if (span.TotalHours < 24)
-            return $"{(int)span.TotalHours} hours ago";
+            return Loc.Get("Time_HoursAgo", (int)span.TotalHours);
         if (span.TotalDays < 7)
-            return $"{(int)span.TotalDays} days ago";
+            return Loc.Get("Time_DaysAgo", (int)span.TotalDays);
 
-        return dateTime.ToString("MMM d, yyyy");
+        return dateTime.ToString(Loc.Get("DateFormat_Short"));
     }
 
     private void ShowLoading(bool show)
@@ -748,8 +751,8 @@ public sealed partial class WatchedFoldersContent : UserControl
         {
             Header = Loc.Get("ConfigDialog_AutoOrganize"),
             IsOn = folder.AutoOrganize,
-            OnContent = "On",
-            OffContent = "Off"
+            OnContent = Loc.Get("Status_On"),
+            OffContent = Loc.Get("Status_Off")
         };
         autoOrganizePanel.Children.Add(autoOrganizeToggle);
         autoOrganizePanel.Children.Add(new TextBlock
@@ -833,7 +836,7 @@ public sealed partial class WatchedFoldersContent : UserControl
             Children =
             {
                 new ProgressRing { IsActive = true, Width = 12, Height = 12, Foreground = new SolidColorBrush(Colors.White) },
-                new TextBlock { Text = "Organizing...", FontSize = 12, VerticalAlignment = VerticalAlignment.Center }
+                new TextBlock { Text = Loc.Get("Status_Organizing"), FontSize = 12, VerticalAlignment = VerticalAlignment.Center }
             }
         };
 
@@ -849,13 +852,13 @@ public sealed partial class WatchedFoldersContent : UserControl
             }
             else if (result.FilesMoved > 0)
             {
-                await ShowInfoDialogAsync("Organization Complete",
-                    $"Successfully organized {result.FilesMoved} files.\n\n{result.FilesSkipped} files were already in their correct locations.");
+                await ShowInfoDialogAsync(Loc.Get("Folders_OrganizeCompleteTitle"),
+                    Loc.Get("Folders_OrganizeCompleteMsg", result.FilesMoved, result.FilesSkipped));
             }
             else
             {
-                await ShowInfoDialogAsync("Nothing to Organize",
-                    "All files are already organized or don't match any rules/categories.");
+                await ShowInfoDialogAsync(Loc.Get("Folders_NothingTitle"),
+                    Loc.Get("Folders_NothingMsg"));
             }
         }
         finally
@@ -883,7 +886,7 @@ public sealed partial class WatchedFoldersContent : UserControl
             Children =
             {
                 new ProgressRing { IsActive = true, Width = 12, Height = 12, Foreground = new SolidColorBrush(Color.FromArgb(255, 181, 186, 193)) },
-                new TextBlock { Text = "Scanning...", FontSize = 12, VerticalAlignment = VerticalAlignment.Center }
+                new TextBlock { Text = Loc.Get("Status_Scanning"), FontSize = 12, VerticalAlignment = VerticalAlignment.Center }
             }
         };
 
@@ -916,8 +919,8 @@ public sealed partial class WatchedFoldersContent : UserControl
                 {
                     if (orgResult.Errors.Count > 0)
                     {
-                        await ShowErrorDialogAsync("Organization Completed with Errors",
-                            $"Organized {orgResult.FilesMoved} files.\n\nErrors:\n{string.Join("\n", orgResult.Errors.Take(5))}");
+                        await ShowErrorDialogAsync(Loc.Get("Folders_OrganizeErrorsTitle"),
+                            Loc.Get("Folders_OrganizeErrorsMsg", orgResult.FilesMoved, string.Join("\n", orgResult.Errors.Take(5))));
                     }
                 }
             }
@@ -933,8 +936,8 @@ public sealed partial class WatchedFoldersContent : UserControl
     {
         var dialog = new ContentDialog
         {
-            Title = $"Preview: {folder.DisplayName}",
-            CloseButtonText = "Close",
+            Title = Loc.Get("Folders_PreviewTitle", folder.DisplayName),
+            CloseButtonText = Loc.Get("Close"),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot
         };
@@ -945,13 +948,13 @@ public sealed partial class WatchedFoldersContent : UserControl
         var summaryPanel = new StackPanel { Spacing = 4 };
         summaryPanel.Children.Add(new TextBlock
         {
-            Text = $"Files that would be organized: {result.FilesWouldMove}",
+            Text = Loc.Get("Folders_WouldOrganize", result.FilesWouldMove),
             FontSize = 14,
             Foreground = new SolidColorBrush(Colors.White)
         });
         summaryPanel.Children.Add(new TextBlock
         {
-            Text = $"Files that would be skipped: {result.FilesSkipped}",
+            Text = Loc.Get("Folders_WouldSkip", result.FilesSkipped),
             FontSize = 14,
             Foreground = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153))
         });
@@ -1002,7 +1005,7 @@ public sealed partial class WatchedFoldersContent : UserControl
             {
                 listPanel.Children.Add(new TextBlock
                 {
-                    Text = $"... and {result.PreviewResults.Count - 50} more files",
+                    Text = Loc.Get("Folders_MoreFiles", result.PreviewResults.Count - 50),
                     FontSize = 11,
                     Foreground = new SolidColorBrush(Color.FromArgb(255, 102, 102, 102)),
                     FontStyle = Windows.UI.Text.FontStyle.Italic
@@ -1016,7 +1019,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         // Organize Now button
         if (result.FilesWouldMove > 0)
         {
-            dialog.PrimaryButtonText = "Organize Now";
+            dialog.PrimaryButtonText = Loc.Get("OrganizeNow");
             dialog.PrimaryButtonClick += async (s, args) =>
             {
                 args.Cancel = true; // Prevent dialog from closing immediately
@@ -1308,7 +1311,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         {
             Title = title,
             Content = message,
-            CloseButtonText = "OK",
+            CloseButtonText = Loc.Get("OK"),
             XamlRoot = this.XamlRoot
         };
         await dialog.ShowAsync();
@@ -1320,7 +1323,7 @@ public sealed partial class WatchedFoldersContent : UserControl
         {
             Title = title,
             Content = message,
-            CloseButtonText = "OK",
+            CloseButtonText = Loc.Get("OK"),
             XamlRoot = this.XamlRoot
         };
         await dialog.ShowAsync();

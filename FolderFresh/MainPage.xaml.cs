@@ -132,10 +132,15 @@ public sealed partial class MainPage : Page
         SetNavText(NavItem_Settings, Loc.Get("Nav_Settings"));
 
         // Home page labels
+        WelcomeText.Text = Loc.Get("Home_Welcome");
+        StepsText.Text = Loc.Get("Home_Steps");
+        StarterPacksText.Text = Loc.Get("StarterPacks_Title");
         CurrentLabel.Text = Loc.Get("Current");
         AfterLabel.Text = Loc.Get("After");
         SelectFolderToPreviewText.Text = Loc.Get("SelectFolderToPreview");
         OrganizedPreviewText.Text = Loc.Get("OrganizedPreview");
+        CurrentFilesPanel.EmptyStateText = Loc.Get("FileExplorer_NoFiles");
+        AfterFilesPanel.EmptyStateText = Loc.Get("NoFilesToOrganize");
         OrganizeButton.Content = Loc.Get("OrganizeNow");
         UndoButton.Content = Loc.Get("Undo");
 
@@ -311,7 +316,7 @@ public sealed partial class MainPage : Page
                         },
                         new TextBlock
                         {
-                            Text = "Coming soon",
+                            Text = Loc.Get("Home_ComingSoon"),
                             FontSize = 12,
                             Foreground = new SolidColorBrush(Color.FromArgb(255, 77, 77, 77)),
                             HorizontalAlignment = HorizontalAlignment.Center,
@@ -1802,9 +1807,9 @@ public sealed partial class MainPage : Page
         {
             var dialog = new ContentDialog
             {
-                Title = "Confirm Organization",
-                Content = $"This will organize files in this folder.\n\nAre you sure you want to continue?",
-                PrimaryButtonText = "Organize",
+                Title = Loc.Get("Confirm_OrganizeTitle"),
+                Content = Loc.Get("Confirm_OrganizeMessage"),
+                PrimaryButtonText = Loc.Get("Folders_Organize"),
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = this.XamlRoot
@@ -1820,7 +1825,7 @@ public sealed partial class MainPage : Page
         _isOperationInProgress = true;
         OrganizeButton.IsEnabled = false;
         UndoButton.IsEnabled = false;
-        OrganizeButton.Content = "Scanning...";
+        OrganizeButton.Content = Loc.Get("Status_Scanning");
 
         // counts[0] = movedCount, counts[1] = errorCount, counts[2] = scannedCount
         var counts = new int[3];
@@ -1873,7 +1878,7 @@ public sealed partial class MainPage : Page
                         var moved = counts[0];
                         DispatcherQueue.TryEnqueue(() =>
                         {
-                            OrganizeButton.Content = $"Organizing... {moved} moved";
+                            OrganizeButton.Content = Loc.Get("Status_OrganizingMoved", moved);
                         });
                     }
                 }
@@ -1894,16 +1899,16 @@ public sealed partial class MainPage : Page
             // Success state
             if (counts[1] > 0)
             {
-                OrganizeButton.Content = $"Done ({counts[1]} skipped)";
+                OrganizeButton.Content = Loc.Get("Status_DoneSkipped", counts[1]);
             }
             else
             {
-                OrganizeButton.Content = "Organized!";
+                OrganizeButton.Content = Loc.Get("Status_Organized");
             }
 
             // Show undo button only if we moved at least one file
             UndoButton.IsEnabled = true;
-            UndoButton.Content = "Undo";
+            UndoButton.Content = Loc.Get("Undo");
             UndoButton.Visibility = moveOps.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             // Refresh both panels
@@ -1912,17 +1917,17 @@ public sealed partial class MainPage : Page
 
             // Reset after delay
             await Task.Delay(2000);
-            OrganizeButton.Content = "Organize Now";
+            OrganizeButton.Content = Loc.Get("OrganizeNow");
             OrganizeButton.IsEnabled = true;
             _isOperationInProgress = false;
         }
         catch (Exception)
         {
-            OrganizeButton.Content = $"Error ({counts[0]} moved)";
+            OrganizeButton.Content = Loc.Get("Status_OrganizeError", counts[0]);
             OrganizeButton.IsEnabled = true;
 
             UndoButton.IsEnabled = true;
-            UndoButton.Content = "Undo";
+            UndoButton.Content = Loc.Get("Undo");
             UndoButton.Visibility = moveOps?.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             try
@@ -2107,7 +2112,7 @@ public sealed partial class MainPage : Page
                         var moved = counts[0];
                         DispatcherQueue.TryEnqueue(() =>
                         {
-                            OrganizeButton.Content = $"Organizing... {moved} moved";
+                            OrganizeButton.Content = Loc.Get("Status_OrganizingMoved", moved);
                         });
                     }
                 }
@@ -2426,7 +2431,7 @@ public sealed partial class MainPage : Page
 
         _isOperationInProgress = true;
         UndoButton.IsEnabled = false;
-        UndoButton.Content = "Undoing...";
+        UndoButton.Content = Loc.Get("Status_Undoing");
         OrganizeButton.IsEnabled = false;
 
         var restoredCount = 0;
@@ -2513,7 +2518,7 @@ public sealed partial class MainPage : Page
                     // Update progress periodically
                     if (restoredCount % 10 == 0)
                     {
-                        UndoButton.Content = $"Undoing... {restoredCount}/{totalFiles}";
+                        UndoButton.Content = Loc.Get("Status_UndoingProgress", restoredCount, totalFiles);
                     }
                 }
                 catch (Exception)
@@ -2563,20 +2568,20 @@ public sealed partial class MainPage : Page
                 {
                     var fileList = failedFiles.Count <= 5
                         ? string.Join("\n", failedFiles)
-                        : string.Join("\n", failedFiles.Take(5)) + $"\n...and {failedFiles.Count - 5} more";
-                    message += $"Failed to restore {failedFiles.Count} file(s):\n{fileList}";
+                        : string.Join("\n", failedFiles.Take(5)) + "\n" + Loc.Get("Undo_MoreFiles", failedFiles.Count - 5);
+                    message += Loc.Get("Undo_FailedToRestore", failedFiles.Count, fileList);
                 }
                 if (deletedFileCount > 0)
                 {
                     if (message.Length > 0) message += "\n\n";
-                    message += $"{deletedFileCount} file(s) were sent to Recycle Bin and need manual restoration.";
+                    message += Loc.Get("Undo_RecycledNote", deletedFileCount);
                 }
 
                 var summaryDialog = new ContentDialog
                 {
-                    Title = "Undo Summary",
+                    Title = Loc.Get("Undo_SummaryTitle"),
                     Content = message,
-                    CloseButtonText = "OK",
+                    CloseButtonText = Loc.Get("OK"),
                     XamlRoot = this.XamlRoot
                 };
                 await summaryDialog.ShowAsync();
@@ -2585,11 +2590,11 @@ public sealed partial class MainPage : Page
             // Update UI
             if (errorCount > 0)
             {
-                UndoButton.Content = $"Restored ({errorCount} failed)";
+                UndoButton.Content = Loc.Get("Status_RestoredWithErrors", errorCount);
             }
             else
             {
-                UndoButton.Content = "Restored!";
+                UndoButton.Content = Loc.Get("Status_Restored");
             }
 
             // Refresh panels
@@ -2601,14 +2606,14 @@ public sealed partial class MainPage : Page
 
             // Reset after delay
             await Task.Delay(2000);
-            UndoButton.Content = "Undo";
+            UndoButton.Content = Loc.Get("Undo");
             UndoButton.Visibility = Visibility.Collapsed;
             OrganizeButton.IsEnabled = true;
             _isOperationInProgress = false;
         }
         catch (Exception)
         {
-            UndoButton.Content = $"Error ({restoredCount} restored)";
+            UndoButton.Content = Loc.Get("Status_UndoError", restoredCount);
             UndoButton.IsEnabled = true;
             OrganizeButton.IsEnabled = true;
 

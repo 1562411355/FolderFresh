@@ -49,6 +49,7 @@ public sealed partial class ActionRow : UserControl
             ContinueInfo.Text = Loc.Get("Action_ContinueInfo");
             PatternTokensHelper.Text = Loc.Get("Action_PatternTokens");
             CategoryComboBox.PlaceholderText = Loc.Get("Action_SelectCategory");
+            FolderPathInput.PlaceholderText = Loc.Get("Action_FolderPlaceholder");
 
             // Update category destination helper if visible
             UpdateCategoryDestinationHelper();
@@ -243,7 +244,7 @@ public sealed partial class ActionRow : UserControl
 
             case ActionType.SortIntoSubfolder:
                 PatternInput.Visibility = Visibility.Visible;
-                PatternInput.PlaceholderText = "Invoices/{Year}/{Month}";
+                PatternInput.PlaceholderText = Loc.Get("Action_RenamePatternPlaceholder");
                 HelperPanel.Visibility = Visibility.Visible;
                 PatternTokensHelper.Visibility = Visibility.Visible;
                 break;
